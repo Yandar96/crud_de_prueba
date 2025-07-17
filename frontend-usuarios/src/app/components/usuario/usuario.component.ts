@@ -12,10 +12,13 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+
+
+
 @Component({
   selector: 'app-usuario',
   standalone: true,
-  
   imports: [
     CommonModule,
     FormsModule,
@@ -28,9 +31,32 @@ import { ToastModule } from 'primeng/toast';
     ToastModule
   ],
   templateUrl: './usuario.component.html',
-  styleUrls: ['./usuario.component.css'],
-  providers: [ConfirmationService, MessageService]
+  styleUrl: './usuario.component.css',
+  providers: [ConfirmationService, MessageService],
+  animations: [
+    trigger('fadeSlideIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' }))
+      ])
+    ]),
+    trigger('staggerList', [
+      transition('* => *', [
+        query(':enter', [
+          style({ opacity: 0, transform: 'translateY(10px)' }),
+          stagger(100, [
+            animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+          ])
+        ], { optional: true })
+      ])
+    ])
+  ]
 })
+
+
 export class UsuarioComponent implements OnInit {
   usuarios: Usuario[] = [];
   usuarioDialog: boolean = false;

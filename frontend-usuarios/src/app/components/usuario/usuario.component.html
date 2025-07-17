@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 
-<div class="card" style="background-color: #f0f8ff; padding: 2rem;">
+<div class="card shadow-2 border-round-xl p-5" style="background-color: #eaf4ff;">
   <h2 style="color: #003366;">Gestión de Usuarios</h2>
 
   <button
@@ -9,10 +9,10 @@
     label="Nuevo Usuario"
     icon="pi pi-plus"
     (click)="abrirNuevo()"
-    class="mb-3 p-button-rounded p-button-primary"
+    class="mb-4 p-button-rounded p-button-outlined p-button-primary animate__animated animate__fadeInDown"
   ></button>
-
-  <p-table [value]="usuarios" dataKey="id" styleClass="p-datatable-striped">
+  <br>
+  <p-table [value]="usuarios" dataKey="id" styleClass="p-datatable-striped p-datatable-hoverable-rows">
     <ng-template pTemplate="header">
       <tr>
         <th>Nombre</th>
@@ -48,10 +48,12 @@
   [(visible)]="usuarioDialog"
   [modal]="true"
   [closable]="false"
-  [style]="{ width: '400px' }"
+  [style]="{ width: '600px' }"
+  class="animate__animated animate__fadeIn"
 >
   <div class="field">
-    <label for="nombre">Nombre:     </label>
+    <label for="nombre" class="font-medium">Nombre:</label>
+    <br>
     <input
       id="nombre"
       type="text"
@@ -59,24 +61,26 @@
       [(ngModel)]="usuario.nombre"
       required
       autofocus
+      [style]="{ width: '100%' }"
     />
     <small *ngIf="submitted && !usuario.nombre" class="p-error">El nombre es obligatorio.</small>
   </div>
 
   <div class="field mt-3">
-    <label for="correo">Correo:   </label>
-   
+    <label for="correo" class="font-medium">Correo:</label>
+    <br>
     <input
       id="correo"
       type="email"
       pInputText
       [(ngModel)]="usuario.correo"
       required
+      [style]="{ width: '100%' }"
     />
     <small *ngIf="submitted && !usuario.correo" class="p-error">El correo es obligatorio.</small>
   </div>
 
-  <div class="flex justify-content-end mt-4">
+  <div class="flex justify-content-end mt-4 gap-2">
     <button
       pButton
       label="Cancelar"
