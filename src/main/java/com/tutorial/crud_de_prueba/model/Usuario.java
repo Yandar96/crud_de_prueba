@@ -12,6 +12,12 @@ public class Usuario {
 
     private String nombre;
     private String correo;
+    @ManyToOne
+    @JoinColumn(name = "cargo_id")
+    private Cargo cargo;
+
+    @Column(nullable = false)
+    private String contrasena;
 
     // Getters y setters
     public Long getId() { return id; }
@@ -22,4 +28,11 @@ public class Usuario {
 
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
+
+    public Cargo getCargo() { return cargo; }
+    public void setCargo(Cargo cargo) { this.cargo = cargo; }
+
+    public String getContrasena() { return contrasena;}
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+
 }

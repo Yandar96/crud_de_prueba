@@ -2,7 +2,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Usuario, UsuarioService } from '../../services/usuario.service';
+import { Usuario } from '../../models/usuario.model';
+import { UsuarioService } from '../../services/usuario.service';
+
 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -13,6 +15,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+
+
 
 
 
@@ -60,7 +64,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
 export class UsuarioComponent implements OnInit {
   usuarios: Usuario[] = [];
   usuarioDialog: boolean = false;
-  usuario: Usuario = { nombre: '', correo: '' };
+  usuario: Usuario = { nombre: '', correo: '', cargo: '' , contrasena: '' };
   submitted: boolean = false;
   editando: boolean = false;
 
@@ -82,7 +86,7 @@ listarUsuarios() {
 }
 
   abrirNuevo() {
-    this.usuario = { nombre: '', correo: '' };
+    this.usuario = { nombre: '', correo: '', cargo: '', contrasena: '' };
     this.submitted = false;
     this.usuarioDialog = true;
     this.editando = false;

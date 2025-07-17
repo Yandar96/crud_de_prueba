@@ -5,46 +5,45 @@ import com.tutorial.crud_de_prueba.model.Usuario;
 import com.tutorial.crud_de_prueba.repository.UsuarioRepository;
 import org.springframework.web.bind.annotation.*;
 
-        import java.util.List;
-@CrossOrigin(origins = "http://localhost:4200")
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UsuarioController {
 
-    private final UsuarioRepository repository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    public UsuarioController(UsuarioRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public List<Usuario> listar() {
-        return repository.findAll();
+    public List<Usuario> getAll() {
+        return usuarioRepository.findAll();
     }
 
     @PostMapping
     public Usuario crear(@RequestBody Usuario usuario) {
-        return repository.save(usuario);
-    }
-
-    @GetMapping("/{id}")
-    public Usuario obtener(@PathVariable Long id) {
-        return repository.findById(id).orElse(null);
+        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+        return usuarioRepository.save(usuario);
     }
 
     @PutMapping("/{id}")
     public Usuario actualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
-        Usuario existente = repository.findById(id).orElse(null);
-        if (existente != null) {
-            existente.setNombre(usuario.getNombre());
-            existente.setCorreo(usuario.getCorreo());
-            return repository.save(existente);
-        }
-        return null;
+        usuario.setId(id);
+        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+        return usuarioRepository.save(usuario);
     }
 
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Long id) {
-        repository.deleteById(id);
+        usuarioRepository.deleteById(id);
     }
 }

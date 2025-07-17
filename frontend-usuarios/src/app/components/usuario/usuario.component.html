@@ -17,6 +17,8 @@
       <tr>
         <th>Nombre</th>
         <th>Correo</th>
+        <th>Cargo</th>
+        <th>Contraseña</th>
         <th>Acciones</th>
       </tr>
     </ng-template>
@@ -24,6 +26,8 @@
       <tr>
         <td>{{ usuario.nombre }}</td>
         <td>{{ usuario.correo }}</td>
+        <td>{{ usuario.cargo }}</td>
+        <td>{{ usuario.paasword }}</td>
         <td>
           <button
             pButton
@@ -80,6 +84,32 @@
     <small *ngIf="submitted && !usuario.correo" class="p-error">El correo es obligatorio.</small>
   </div>
 
+  <div class="field mt-3">
+    <label for="cargo" class="font-medium">Cargo:</label>
+    <br>
+    <input
+      id="cargo"
+      type="text"
+      pInputText
+      [(ngModel)]="usuario.cargo"
+      required
+      [style]="{ width: '100%' }"
+    />
+    <small *ngIf="submitted && !usuario.cargo" class="p-error">El cargo es obligatorio.</small>
+  </div>
+  <div class="field mt-3">
+    <label for="password" class="font-medium">Contraseña:</label>
+    <br>
+    <input
+      id="password"
+      type="password"
+      pInputText
+      [(ngModel)]="usuario.contrasena"
+      required
+      [style]="{ width: '100%' }"
+    />
+    <small *ngIf="submitted && !usuario.contrasena" class="p-error">La contraseña es obligatoria.</small>
+  </div>
   <div class="flex justify-content-end mt-4 gap-2">
     <button
       pButton
