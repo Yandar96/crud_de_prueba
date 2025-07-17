@@ -1,0 +1,98 @@
+<p-toast></p-toast>
+
+<div class="card" style="background-color: #f0f8ff; padding: 2rem;">
+  <h2 style="color: #003366;">Gestión de Usuarios</h2>
+
+  <button
+    pButton
+    type="button"
+    label="Nuevo Usuario"
+    icon="pi pi-plus"
+    (click)="abrirNuevo()"
+    class="mb-3 p-button-rounded p-button-primary"
+  ></button>
+
+  <p-table [value]="usuarios" dataKey="id" styleClass="p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-usuario>
+      <tr>
+        <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.correo }}</td>
+        <td>
+          <button
+            pButton
+            icon="pi pi-pencil"
+            (click)="editarUsuario(usuario)"
+            class="p-button-rounded p-button-info me-2"
+          ></button>
+          <button
+            pButton
+            icon="pi pi-trash"
+            (click)="eliminarUsuario(usuario)"
+            class="p-button-rounded p-button-danger"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  header="{{ editando ? 'Editar Usuario' : 'Nuevo Usuario' }}"
+  [(visible)]="usuarioDialog"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '400px' }"
+>
+  <div class="field">
+    <label for="nombre">Nombre:     </label>
+    <input
+      id="nombre"
+      type="text"
+      pInputText
+      [(ngModel)]="usuario.nombre"
+      required
+      autofocus
+    />
+    <small *ngIf="submitted && !usuario.nombre" class="p-error">El nombre es obligatorio.</small>
+  </div>
+
+  <div class="field mt-3">
+    <label for="correo">Correo:   </label>
+   
+    <input
+      id="correo"
+      type="email"
+      pInputText
+      [(ngModel)]="usuario.correo"
+      required
+    />
+    <small *ngIf="submitted && !usuario.correo" class="p-error">El correo es obligatorio.</small>
+  </div>
+
+  <div class="flex justify-content-end mt-4">
+    <button
+      pButton
+      label="Cancelar"
+      icon="pi pi-times"
+      (click)="ocultarDialogo()"
+      class="p-button-text"
+    ></button>
+    <button
+      pButton
+      label="Guardar"
+      icon="pi pi-check"
+      (click)="guardarUsuario()"
+      [disabled]="!usuario.nombre || !usuario.correo"
+      class="p-button-primary"
+    ></button>
+  </div>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
