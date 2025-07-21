@@ -1,8 +1,6 @@
 <p-toast></p-toast>
-
 <div class="card shadow-2 border-round-xl p-5" style="background-color: #eaf4ff;">
   <h2 style="color: #003366;">Gestión de Usuarios</h2>
-
   <button
     pButton
     type="button"
@@ -26,8 +24,8 @@
       <tr>
         <td>{{ usuario.nombre }}</td>
         <td>{{ usuario.correo }}</td>
-        <td>{{ usuario.cargo }}</td>
-        <td>{{ usuario.paasword }}</td>
+        <td>{{ usuario.cargo?.nombre }}</td>
+        <td>{{ usuario.contrasena }}</td>
         <td>
           <button
             pButton
@@ -84,19 +82,16 @@
     <small *ngIf="submitted && !usuario.correo" class="p-error">El correo es obligatorio.</small>
   </div>
 
-  <div class="field mt-3">
-    <label for="cargo" class="font-medium">Cargo:</label>
-    <br>
-    <input
-      id="cargo"
-      type="text"
-      pInputText
-      [(ngModel)]="usuario.cargo"
-      required
-      [style]="{ width: '100%' }"
-    />
-    <small *ngIf="submitted && !usuario.cargo" class="p-error">El cargo es obligatorio.</small>
-  </div>
+  <div class="field">
+  <label for="cargo">Cargo</label>
+  <p-dropdown
+    [options]="cargos"
+    optionLabel="nombre"
+    optionValue="id"
+    [(ngModel)]="usuario.cargoId"
+    placeholder="Seleccione un cargo">
+  </p-dropdown>
+</div>
   <div class="field mt-3">
     <label for="password" class="font-medium">Contraseña:</label>
     <br>

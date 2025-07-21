@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { Usuario } from '../../models/usuario.model';
 import { UsuarioService } from '../../services/usuario.service';
 
-
+import { Cargo } from '../../models/cargo.model';
+import { CargoService } from '../../services/cargo.service';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -13,12 +14,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
-
-
-
-
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-usuario',
@@ -32,7 +29,8 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
     InputTextModule,
     ConfirmDialogModule,
     HttpClientModule,
-    ToastModule
+    ToastModule,
+    DropdownModule
   ],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.css',
@@ -63,21 +61,35 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
 
 export class UsuarioComponent implements OnInit {
   usuarios: Usuario[] = [];
+  cargos: Cargo[] = [];
   usuarioDialog: boolean = false;
-  usuario: Usuario = { nombre: '', correo: '', cargo: '' , contrasena: '' };
+  usuario: any = {
+  nombre: '',
+  correo: '',
+  contrasena: '',
+  cargoId: null // usamos esto para el dropdown
+};
   submitted: boolean = false;
   editando: boolean = false;
 
   constructor(
     private usuarioService: UsuarioService,
     private confirmationService: ConfirmationService,
+    private cargoService: CargoService,
     private messageService: MessageService
   ) {}
 
   ngOnInit() {
     this.listarUsuarios();
+    this.getCargos(); // carga los cargos para el dropdown
   }
 
+
+  getCargos() {
+    this.cargoService.getCargos().subscribe(data => {
+      this.cargos = data;
+    });
+  }
 listarUsuarios() {
   this.usuarioService.getUsuarios().subscribe(data => {
     console.log('Usuarios recibidos:', data);
@@ -86,18 +98,14 @@ listarUsuarios() {
 }
 
   abrirNuevo() {
-    this.usuario = { nombre: '', correo: '', cargo: '', contrasena: '' };
+    this.usuario = { nombre: '', correo: '', contrasena: '',  cargoId: null };
+
     this.submitted = false;
     this.usuarioDialog = true;
     this.editando = false;
   }
 
-  editarUsuario(usuario: Usuario) {
-    this.usuario = { ...usuario };
-    this.usuarioDialog = true;
-    this.editando = true;
-  }
-
+  
   eliminarUsuario(usuario: Usuario) {
     this.confirmationService.confirm({
       message: `¿Seguro que deseas eliminar a ${usuario.nombre}?`,
@@ -113,24 +121,42 @@ listarUsuarios() {
   }
 
   guardarUsuario() {
-    this.submitted = true;
+  this.submitted = true;
 
-    if (!this.usuario.nombre || !this.usuario.correo) return;
+  if (!this.usuario.nombre || !this.usuario.correo || !this.usuario.cargoId) return;
 
-    if (this.editando && this.usuario.id) {
-      this.usuarioService.actualizarUsuario(this.usuario).subscribe(() => {
-        this.listarUsuarios();
-        this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: 'Usuario actualizado', life: 3000 });
-        this.usuarioDialog = false;
-      });
-    } else {
-      this.usuarioService.crearUsuario(this.usuario).subscribe(() => {
-        this.listarUsuarios();
-        this.messageService.add({ severity: 'success', summary: 'Creado', detail: 'Usuario creado', life: 3000 });
-        this.usuarioDialog = false;
-      });
-    }
+  // Convertir cargoId a objeto antes de enviar
+  const usuarioParaGuardar = {
+    ...this.usuario,
+    cargo: { id: this.usuario.cargoId }
+  };
+
+  if (this.editando && this.usuario.id) {
+    this.usuarioService.actualizarUsuario(usuarioParaGuardar).subscribe(() => {
+      this.listarUsuarios();
+      this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: 'Usuario actualizado', life: 3000 });
+      this.usuarioDialog = false;
+    });
+  } else {
+    this.usuarioService.crearUsuario(usuarioParaGuardar).subscribe(() => {
+      this.listarUsuarios();
+      this.messageService.add({ severity: 'success', summary: 'Creado', detail: 'Usuario creado', life: 3000 });
+      this.usuarioDialog = false;
+    });
   }
+}
+
+
+  editarUsuario(usuario: Usuario) {
+  this.usuario = {
+    ...usuario,
+    cargoId: usuario.cargo?.id ?? null
+  };
+  this.usuarioDialog = true;
+  this.editando = true;
+}
+
+
 
   ocultarDialogo() {
     this.usuarioDialog = false;

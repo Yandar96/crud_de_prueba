@@ -3,18 +3,22 @@ import { CommonModule } from '@angular/common';
 import { Cargo } from '../../models/cargo.model';
 import { CargoService } from '../../services/cargo.service';
 import { FormsModule } from '@angular/forms';
+
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-cargo',
   standalone: true,
+  templateUrl: './cargo.component.html',
+  styleUrls: ['./cargo.component.css'],
   imports: [
     CommonModule,
     FormsModule,
@@ -26,9 +30,7 @@ import { ToastModule } from 'primeng/toast';
     ConfirmDialogModule,
     ToastModule
   ],
-  providers: [ConfirmationService, MessageService],
-  templateUrl: './cargo.component.html',
-  styleUrl: './cargo.component.css'
+  providers: [ConfirmationService, MessageService]
 })
 export class CargoComponent {
   cargos: Cargo[] = [];
@@ -44,7 +46,7 @@ export class CargoComponent {
     this.listarCargos();
   }
 
-  initCargo(): Cargo {
+  private initCargo(): Cargo {
     return {
       nombre: '',
       dependencia: '',
@@ -52,40 +54,47 @@ export class CargoComponent {
     };
   }
 
-  listarCargos() {
+  listarCargos(): void {
     this.cargoService.getCargos().subscribe(data => {
       this.cargos = data;
     });
   }
 
-  openNew() {
+  openNew(): void {
     this.cargo = this.initCargo();
     this.submitted = false;
     this.cargoDialog = true;
   }
 
-  editCargo(cargo: Cargo) {
+  editCargo(cargo: Cargo): void {
     this.cargo = { ...cargo };
     this.cargoDialog = true;
   }
 
-  eliminarCargo(cargo: Cargo) {
-    if (cargo.id !== undefined) {
-      this.cargoService.eliminarCargo(cargo.id).subscribe(() => {
-        this.cargos = this.cargos.filter(c => c.id !== cargo.id);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cargo eliminado' });
-      });
-    } else {
-      console.error('No se puede eliminar: el cargo no tiene ID');
-    }
+  eliminarCargo(cargo: Cargo): void {
+    this.confirmationService.confirm({
+      message: `¿Está seguro de que desea eliminar el cargo "${cargo.nombre}"?`,
+      accept: () => {
+        if (cargo.id !== undefined) {
+          this.cargoService.eliminarCargo(cargo.id).subscribe(() => {
+            this.cargos = this.cargos.filter(c => c.id !== cargo.id);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Cargo eliminado'
+            });
+          });
+        }
+      }
+    });
   }
 
-  hideDialog() {
+  hideDialog(): void {
     this.cargoDialog = false;
     this.submitted = false;
   }
 
-  saveCargo() {
+  saveCargo(): void {
     this.submitted = true;
 
     if (!this.cargo.nombre.trim()) return;

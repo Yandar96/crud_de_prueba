@@ -1,15 +1,25 @@
-
 import { Component } from '@angular/core';
-import { UsuarioComponent } from './components/usuario/usuario.component';
+import { RouterModule } from '@angular/router';
+import { MenubarModule } from 'primeng/menubar';
+import { MenuItem } from 'primeng/api';
 import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    HttpClientModule, // <- IMPORTANTE
-    UsuarioComponent
+    RouterModule,          // Para <router-outlet>
+    MenubarModule,         // Para p-menubar
+    HttpClientModule,
   ],
-  template: `<app-usuario />`
+  template: `
+    <p-menubar [model]="items"></p-menubar>
+    <router-outlet></router-outlet>
+  `
 })
-export class AppComponent {}
+export class AppComponent {
+  items: MenuItem[] = [
+    { label: 'Usuarios', routerLink: '/usuarios' },
+    { label: 'Cargos', routerLink: '/cargos' }
+  ];
+}

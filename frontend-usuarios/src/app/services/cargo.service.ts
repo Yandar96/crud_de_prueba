@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CargoService {
-  private apiUrl = 'http://localhost:8080/api/cargos'; // Ajusta si usas otro endpoint
+  private apiUrl = 'http://localhost:8080/api/cargos';
+
 
   constructor(private http: HttpClient) {}
 
@@ -23,7 +24,7 @@ export class CargoService {
     return this.http.put<Cargo>(`${this.apiUrl}/${id}`, cargo);
   }
 
-  eliminarCargo(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  eliminarCargo(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
